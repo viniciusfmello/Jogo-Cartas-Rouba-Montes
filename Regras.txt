@@ -1,0 +1,9 @@
+ROUBA MONTESn
+Objetivo do jogo:
+ Acumular o maior monte de cartas.
+
+ Regras: Um jogador distribui 4 cartas para cada participante e vira 4 cartas na mesa.
+ O primeiro  jogador deve veri car se alguma carta que ele tem na mão é igual a alguma carta da mesa.
+ Se for igual, ele junta as duas cartas em seu monte. Caso a carta seja igual a à carta do topo do monte adversário, ele poderá roubar esse monte, pegando todas as cartas.
+ Caso não tenha uma carta igual a qualquer uma da mesa, deverá descartar uma carta da mão virada para cima no centro da mesa. Quando todos os jogadores estiverem sem cartas na mão, são distribuídas mais quatro para cada um, até que o baralho acabe.
+ O jogo termina quando não houver mais cartas para serem distribuídas, e ganha quem tiver o maior monte. O coringa pode ser colocado em cima do monte do jogador para protegê-lo de ser roubado, e dura até que outra carta seja colocada por cima do monte.
