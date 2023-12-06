@@ -5,12 +5,14 @@ class Program
     static List<Cartas> cartasBaralho = new List<Cartas>();
     static List<Jogador> ListaJogadores = new List<Jogador>();
     static List<Cartas> ListaDeCartasAreaDescarte = new List<Cartas>();
-
-    static StreamWriter escritorArquivo = new StreamWriter("Logs.txt", true);
+    static string caminhoArquivoLogs = "Logs.txt";
+    static string caminhoArquivoRankings = "Rankings.txt";
     static void Main()
     {
-        criarRegras();
-
+        using (StreamWriter escritorArquivo = new StreamWriter(caminhoArquivoLogs))
+        {
+            escritorArquivo.WriteLine("**** LOGS DA PARTIDA ****");
+        }
         while (true)
         {
             Console.ForegroundColor = ConsoleColor.Blue;
@@ -33,7 +35,7 @@ class Program
                         QuestionarioIniciarJogo();
                         break;
                     case 2:
-                        Console.WriteLine("\nNão se preocupe!! Temos um arquivo de texto com todas as regras do jogo disponibilizados na pasta, dê uma olhada!");
+                        Console.WriteLine("\nNão se preocupe!! Temos um arquivo de texto que explica todo o jogo. Confira- na pasta, dê uma olhada!");
                         int preparado = 0;
                         Console.WriteLine("Quando estiverem prontos, digite 1: ");
                         while (preparado != 1)
@@ -97,6 +99,10 @@ class Program
                             else
                             {
                                 Partida partida = new Partida();
+                                using (StreamWriter escritorArquivo = new StreamWriter(caminhoArquivoLogs))
+                                {
+                                    escritorArquivo.WriteLine($"- {quantJogadores} jogadores vão jogar o jogo");
+                                }
                                 break;
                             }
                         }
@@ -116,9 +122,12 @@ class Program
                             }
                             else
                             {
+                                using (StreamWriter escritorArquivo = new StreamWriter(caminhoArquivoLogs, true))
+                                {
+                                    escritorArquivo.WriteLine($"- Esse jogo terá {quantBaralhos} baralho(s), total de {53 * quantBaralhos} cartas");
+                                }
                                 CadastrarJogadores(quantJogadores);
-                                IniciarPartida(quantBaralhos, quantJogadores);
-
+                                IniciarPartida(quantBaralhos, quantJogadores, caminhoArquivoLogs);
                                 break;
                             }
                         }
@@ -133,17 +142,17 @@ class Program
                     Console.WriteLine("\n****OPÇÃO INVÁLIDA****");
                     Console.ResetColor();
                     break;
-
             }
         }
+
         catch (FormatException)
         {
             Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("\n**** ERRO!! NOSSO MENU FUNCIONA APENAS COM NÚMEROS ****\n");
-                Console.ResetColor();
+            Console.WriteLine("\n**** ERRO!! NOSSO MENU FUNCIONA APENAS COM NÚMEROS ****\n");
+            Console.ResetColor();
         }
     }
-    static void IniciarPartida(int quantBaralhos, int quantJogadores)
+    static void IniciarPartida(int quantBaralhos, int quantJogadores, string caminhoArquivoLogs)
     {
         Queue<Jogador> rodada = new Queue<Jogador>(quantJogadores);
         Partida partida = new Partida();
@@ -152,11 +161,9 @@ class Program
             cartas.AdicionarCartas(cartasBaralho); //Adiciona cartas ao baralho
         }
         //Embaralha todas cartas
-        List<Cartas> BaralhoEmbaralhado = partida.EmbaralharCartas(cartasBaralho, quantBaralhos);
-        //Adicio as cartas no baralho
-        partida.Baralho(BaralhoEmbaralhado);
-
-        Stack<Cartas> BaralhoMesa = partida.Baralho(BaralhoEmbaralhado);
+        List<Cartas> BaralhoEmbaralhado = partida.EmbaralharCartas(cartasBaralho, quantBaralhos, caminhoArquivoLogs);
+        //Adiciona as cartas no baralho
+        Stack<Cartas> MonteCompras = partida.Baralho(BaralhoEmbaralhado);
         for (int i = 0; i < quantJogadores; i++)
         {
             rodada.Enqueue(ListaJogadores[i]);
@@ -166,8 +173,12 @@ class Program
         Console.WriteLine("\n**** INICIANDO RODADA ****\n");
         Console.ResetColor();
         //Começa a rodada
-        while (BaralhoMesa.Count > 0)
+        while (MonteCompras.Count > 0)
         {
+            using (StreamWriter escritorArquivo = new StreamWriter(caminhoArquivoLogs, true))
+                {
+                    escritorArquivo.Write($"O baralho tem {MonteCompras.Count} cartas.");
+                }
             Jogador jogador = rodada.Dequeue();
             rodada.Enqueue(jogador);
             Cartas cartaDaVez;
@@ -180,10 +191,17 @@ class Program
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine("\n**** PIN VALIDADO ****\n");
                     Console.ResetColor();
-                    cartaDaVez = BaralhoMesa.Pop();
+                    cartaDaVez = MonteCompras.Pop();
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine($"**** A CARTA DA VEZ RETIRADA DO BARALHO É: {cartaDaVez.GetNumero()} {cartaDaVez.GetNaipe()}\n");
                     Console.ResetColor();
+
+                    //Escreve nos logs
+                    using (StreamWriter escritorArquivo = new StreamWriter(caminhoArquivoLogs, true))
+                    {
+                        escritorArquivo.WriteLine($"- O jogador da vez é o(a) [{jogador.getNome()}] e a carta da vez retirada por ele é a {cartaDaVez.GetNumero()} {cartaDaVez.GetNaipe()}");
+                        escritorArquivo.WriteLine($"Cartas na área de descarte: ");
+                    }
                     Console.WriteLine("------------------------------");
                     Console.WriteLine("CARTAS DA MESA (ÁREA DE DESCARTE)");
                     if (ListaDeCartasAreaDescarte.Count > 0)
@@ -191,6 +209,11 @@ class Program
                         for (int i = 0; i < ListaDeCartasAreaDescarte.Count; i++)
                         {
                             Console.WriteLine($"{ListaDeCartasAreaDescarte[i].GetNumero()} {ListaDeCartasAreaDescarte[i].GetNaipe()}");
+                            //escreve nos logs
+                            using (StreamWriter escritorArquivo = new StreamWriter(caminhoArquivoLogs, true))
+                            {
+                                escritorArquivo.Write($"{ListaDeCartasAreaDescarte[i].GetNumero()} {ListaDeCartasAreaDescarte[i].GetNaipe()}");
+                            }
                         }
                     }
                     else
@@ -201,7 +224,7 @@ class Program
                     }
                     Console.WriteLine("\n------------------------------");
 
-                    partida.IniciarPartida(BaralhoMesa, jogador, cartaDaVez, ListaJogadores, ListaDeCartasAreaDescarte);
+                    partida.IniciarPartida(MonteCompras, jogador, cartaDaVez, ListaJogadores, ListaDeCartasAreaDescarte, caminhoArquivoLogs);
                     break;
                 }
                 else
@@ -209,6 +232,10 @@ class Program
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("\n**** PIN INCORRETO ****\n");
                     Console.ResetColor();
+                    using (StreamWriter escritorArquivo = new StreamWriter(caminhoArquivoLogs, true))
+                    {
+                        escritorArquivo.WriteLine($"- O jogador {jogador.getNome()} digitou um PIN incorreto");
+                    }
                 }
             }
         }
@@ -237,6 +264,10 @@ class Program
                     Console.ResetColor();
                     Jogador jogador = new Jogador(nomeJogador, pin);
                     ListaJogadores.Add(jogador);
+                    using (StreamWriter escritorArquivo = new StreamWriter(caminhoArquivoLogs, true))
+                    {
+                        escritorArquivo.WriteLine($"- Jogador de nome [{nomeJogador}] foi cadastrado com o PIN [{pin}]");
+                    }
                     break;
                 }
                 else
@@ -248,18 +279,10 @@ class Program
             }
         }
     }
-    static void criarRegras()
-    {
-        string caminhoarquivo = "Regras.txt";
-        string texto = "ROUBA MONTESn\nObjetivo do jogo:\n Acumular o maior monte de cartas.\n\n Regras: Um jogador distribui 4 cartas para cada participante e vira 4 cartas na mesa.\n O primeiro  jogador deve veri car se alguma carta que ele tem na mão é igual a alguma carta da mesa.\n Se for igual, ele junta as duas cartas em seu monte. Caso a carta seja igual a à carta do topo do monte adversário, ele poderá roubar esse monte, pegando todas as cartas.\n Caso não tenha uma carta igual a qualquer uma da mesa, deverá descartar uma carta da mão virada para cima no centro da mesa. Quando todos os jogadores estiverem sem cartas na mão, são distribuídas mais quatro para cada um, até que o baralho acabe.\n O jogo termina quando não houver mais cartas para serem distribuídas, e ganha quem tiver o maior monte. O coringa pode ser colocado em cima do monte do jogador para protegê-lo de ser roubado, e dura até que outra carta seja colocada por cima do monte.";
-        StreamWriter regras = new StreamWriter(caminhoarquivo);
-        regras.Write(texto);
-        regras.Close();
-    }
     static void OrdenarGanhadores(List<Jogador> ListaJogadores)
     {
-        OrdenarQtdCartasNaMao(ListaJogadores);
-        static void OrdenarQtdCartasNaMao(List<Jogador> ListaJogadores)
+        OrdenarQtdCartasNoMonte(ListaJogadores);
+        static void OrdenarQtdCartasNoMonte(List<Jogador> ListaJogadores)
         {
             Jogador temp;
             for (int i = 0; i < (ListaJogadores.Count - 1); i++)
@@ -275,9 +298,8 @@ class Program
                 }
             }
         }
-
-        PodioJogadores(ListaJogadores);
-        static void PodioJogadores(List<Jogador> ListaJogadores)
+        PodioJogadores(ListaJogadores, caminhoArquivoRankings);
+        static void PodioJogadores(List<Jogador> ListaJogadores, string caminhoArquivoRankings)
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("\n**** PÓDIO DESSA RODADA ****\n");
@@ -286,11 +308,11 @@ class Program
             while (cont < posicao && cont < ListaJogadores.Count)
             {
                 List<Cartas> MonteJogador = ListaJogadores[cont].monteJogador.ToList();
+                bool empatou = false;
                 if (cont + 1 < ListaJogadores.Count)
                 {
-                    if (cont + 1 < ListaJogadores.Count && ListaJogadores[cont].monteJogador.Count == ListaJogadores[cont + 1].monteJogador.Count)
+                    if (ListaJogadores[cont].monteJogador.Count == ListaJogadores[cont + 1].monteJogador.Count)
                     {
-
                         Console.WriteLine($"\n**** HOUVE UM EMPATE ENTRE OS JOGADORES {ListaJogadores[cont].getNome()} e {ListaJogadores[cont + 1].getNome()} ****\n");
                         Console.WriteLine($"Nome Jogador: {ListaJogadores[cont].getNome()}\nPosição: {cont + 1}\nQuantidade de cartas no monte: {ListaJogadores[cont].getQtdCartasMonte()}\nCartas ordenadas do monte do jogador:");
                         MostrarMonteOrdenado(MonteJogador);
@@ -299,18 +321,28 @@ class Program
                         MostrarMonteOrdenado(MonteJogador);
                         ListaJogadores[cont].ranking.Enqueue(cont + 1);
                         ListaJogadores[cont + 1].ranking.Enqueue(cont + 1);
+                         using (StreamWriter escritorArquivo = new StreamWriter(caminhoArquivoRankings, true))
+                        {
+                            escritorArquivo.WriteLine($"- O jogador [{ListaJogadores[cont].getNome()}] ficou na posição {cont + 1}");
+                            escritorArquivo.WriteLine($"- O jogador [{ListaJogadores[cont + 1].getNome()}] ficou na posição {cont + 1}");
+                        }
                         cont += 2;
                         posicao++;
+                        empatou = true;
+                       
                     }
                 }
-                else
+                if(!empatou)
                 {
-                    Console.WriteLine($"Nome Jogador: {ListaJogadores[cont].getNome()}\nPosição: {cont}\nQuantidade de cartas no monte: {ListaJogadores[cont].getQtdCartasMonte()}\nCartas ordenadas do monte do jogador:");
+                    Console.WriteLine($"Nome Jogador: {ListaJogadores[cont].getNome()}\nPosição: {cont + 1}\nQuantidade de cartas no monte: {ListaJogadores[cont].getQtdCartasMonte()}\nCartas ordenadas do monte do jogador:");
                     MostrarMonteOrdenado(MonteJogador);
                     ListaJogadores[cont].ranking.Enqueue(cont);
-                    ++cont;
+                    using (StreamWriter escritorArquivo = new StreamWriter(caminhoArquivoRankings, true))
+                        {
+                            escritorArquivo.WriteLine($"- O jogador [{ListaJogadores[cont].getNome()}] ficou na posição {cont + 1}");
+                        }
+                    cont++;
                 }
-
             }
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("\n**** RANKING ORDENANDO PELA QUANTIDADE DE CARTAS NO MONTE ****\n");
@@ -351,6 +383,20 @@ class Program
                 Console.WriteLine("\n**** O JOGADOR NÃO POSSUI MONTE ****\n");
                 Console.ResetColor();
                 Console.WriteLine("------------------\n");
+            }
+        }
+    }
+    static void BuscarRankingJogador(List<Jogador> ListaJogadores, string nome) {
+        int cont = 0;
+        for (int i = 0; i < ListaJogadores.Count; i++) {
+            if(nome == ListaJogadores[i].getNome()) {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine($"*** O JOGADOR FOI ENCONTRADO ***\nAS 5 ÚLTIMAS POSIÇÕES DO JOGADOR {ListaJogadores[i].getNome()} FORAM: ");
+                Console.ResetColor();       
+                foreach (var rank in ListaJogadores[i].ranking){
+                    Console.WriteLine($"PARTIDA {cont + 1} POSIÇÃO: {rank}°");
+                    cont ++;
+                }
             }
         }
     }
