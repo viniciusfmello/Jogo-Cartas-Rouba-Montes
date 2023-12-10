@@ -12,3 +12,18 @@ C:\Users\vinic\Desktop\projetos\Rouba Montes\CodigoFonte\obj\Debug\net8.0\refint
 C:\Users\vinic\Desktop\projetos\Rouba Montes\CodigoFonte\obj\Debug\net8.0\CodigoFonte.pdb
 C:\Users\vinic\Desktop\projetos\Rouba Montes\CodigoFonte\obj\Debug\net8.0\CodigoFonte.genruntimeconfig.cache
 C:\Users\vinic\Desktop\projetos\Rouba Montes\CodigoFonte\obj\Debug\net8.0\ref\CodigoFonte.dll
+C:\Users\gabri\Jogo-Cartas-Rouba-Montes-1\bin\Debug\net8.0\CodigoFonte.exe
+C:\Users\gabri\Jogo-Cartas-Rouba-Montes-1\bin\Debug\net8.0\CodigoFonte.deps.json
+C:\Users\gabri\Jogo-Cartas-Rouba-Montes-1\bin\Debug\net8.0\CodigoFonte.runtimeconfig.json
+C:\Users\gabri\Jogo-Cartas-Rouba-Montes-1\bin\Debug\net8.0\CodigoFonte.dll
+C:\Users\gabri\Jogo-Cartas-Rouba-Montes-1\bin\Debug\net8.0\CodigoFonte.pdb
+C:\Users\gabri\Jogo-Cartas-Rouba-Montes-1\obj\Debug\net8.0\CodigoFonte.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\gabri\Jogo-Cartas-Rouba-Montes-1\obj\Debug\net8.0\CodigoFonte.AssemblyInfoInputs.cache
+C:\Users\gabri\Jogo-Cartas-Rouba-Montes-1\obj\Debug\net8.0\CodigoFonte.AssemblyInfo.cs
+C:\Users\gabri\Jogo-Cartas-Rouba-Montes-1\obj\Debug\net8.0\CodigoFonte.csproj.CoreCompileInputs.cache
+C:\Users\gabri\Jogo-Cartas-Rouba-Montes-1\obj\Debug\net8.0\CodigoFonte.sourcelink.json
+C:\Users\gabri\Jogo-Cartas-Rouba-Montes-1\obj\Debug\net8.0\CodigoFonte.dll
+C:\Users\gabri\Jogo-Cartas-Rouba-Montes-1\obj\Debug\net8.0\refint\CodigoFonte.dll
+C:\Users\gabri\Jogo-Cartas-Rouba-Montes-1\obj\Debug\net8.0\CodigoFonte.pdb
+C:\Users\gabri\Jogo-Cartas-Rouba-Montes-1\obj\Debug\net8.0\CodigoFonte.genruntimeconfig.cache
+C:\Users\gabri\Jogo-Cartas-Rouba-Montes-1\obj\Debug\net8.0\ref\CodigoFonte.dll

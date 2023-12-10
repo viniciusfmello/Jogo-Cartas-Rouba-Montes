@@ -67,6 +67,11 @@ class Program
     }
     static void QuestionarioIniciarJogo()
     {
+        /*
+        Nesse método criamos um questionário para sabermos informações básicas do jogo, como por exemplo quantos jogadores vão jogar e a quantidade de baralho que os jogadores querem.
+        Caso o jogador digite uma opção que não está disponível, uma mensagem de erro é exibida e o jogador é redirecionado para escolher uma opção disponível.
+
+        */
         int quantJogadores;
         Console.WriteLine("\nVocê deseja iniciar uma partida?");
         Console.ForegroundColor = ConsoleColor.Green;
@@ -135,7 +140,9 @@ class Program
                     }
                     break;
                 case 2:
-
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine("Obrigado pela oportunidade de conhecer nosso jogo, volte quando estiver pronto!");
+                    Console.ResetColor();
                     break;
                 default:
                     Console.ForegroundColor = ConsoleColor.Red;
@@ -239,10 +246,40 @@ class Program
                 }
             }
         }
+        /*
+        Aqui é apenas um menu fim de rodada, onde os jogadores tem a opção de escolher o rank de outro jogador.
+        */
         OrdenarGanhadores(ListaJogadores);
+        Console.WriteLine("--- MENU FIM DE RODADA ---");
+        Console.WriteLine("1) Deseja iniciar uma nova rodada?\n2) Deseja ver o ranking de algum jogador?\n3) Sair do jogo.");
+        int continuar = int.Parse(Console.ReadLine());
+        switch (continuar) {
+            case 1: 
+            IniciarPartida(quantBaralhos, quantJogadores, caminhoArquivoLogs);
+            break;
+            case 2:
+            string nome = "";
+            Console.WriteLine("Insira o nome do jogador que você deseja pesquisar o rank: ");
+            nome = Console.ReadLine();
+            BuscarRankingJogador(ListaJogadores, nome);
+            break;
+            case 3:
+            Console.WriteLine("Obrigado por jogar nosso jogo!"); 
+            break;
+            default: 
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("**** OPÇÃO INVÁLIDA ****");
+            Console.ResetColor();
+            break;
+        }
     }
     static void CadastrarJogadores(int quantJogadores)
     {
+        /*
+        Esse método foi criado para cadastrar os jogadores, criamos um for para rodar a quantidade de jogadores e adicionar o nome de cada um. Também criamos um pin para cada jogador,
+        o mínimo de cada pin é 4 caracteres, caso o pin tiver menos que 4, uma mensagem de erro é exbida, mas caso o pin tenha 4 caracteres, uma mensagem dizendo que o jogador foi
+        cadastrado é exibida.
+        */
         Console.ForegroundColor = ConsoleColor.Yellow;
         Console.WriteLine("\n**** CADASTRO DE JOGADOR ****\n");
         Console.ResetColor();
@@ -281,6 +318,9 @@ class Program
     }
     static void OrdenarGanhadores(List<Jogador> ListaJogadores)
     {
+        /*
+        Criamos esse método para ordenar os jogadores pela quantidade de cartas no monte de cada um.
+        */
         OrdenarQtdCartasNoMonte(ListaJogadores);
         static void OrdenarQtdCartasNoMonte(List<Jogador> ListaJogadores)
         {
@@ -301,6 +341,11 @@ class Program
         PodioJogadores(ListaJogadores, caminhoArquivoRankings);
         static void PodioJogadores(List<Jogador> ListaJogadores, string caminhoArquivoRankings)
         {
+            /*
+            Nesse método, verificamos o pódio da rodada jogada, tratando empates nas vitórias e colocando em ordem de acordo com a quantidade de cartas no monte de cada jogador. 
+            Para isso, montamos um while que vai percorrer a lista de jogadores e montar um pódio(com no máximo 3 posições) e desenvolvemos uma lógica pra caso desse empate, ou seja,
+            duas pessoas ocupaasem a mesma posição, a variável que controla a quantidade de jogadores no pódio aumentasse para ser no máximo 3 posições no pódio(1°, 2° e 3°)
+            */
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("\n**** PÓDIO DESSA RODADA ****\n");
             Console.ResetColor();
@@ -387,6 +432,11 @@ class Program
         }
     }
     static void BuscarRankingJogador(List<Jogador> ListaJogadores, string nome) {
+        /*
+        Esse método foi criado para buscar o ranking de um jogador. Para isso utilizamos um for para percorrer a lista de jogadores, se o nome digitado for encontrado
+        na lista, então uma mensagem dizendo que o jogador foi encontrado é exibida, junto com as últimas 5 posições do jogador. Para encontrar a posição do jogador no rank, utilizamos
+        um foreach para percorrer, na posição do jogador encontrada, todos os ranks das últimas 5 partidas jogadas do jogador em questão.
+        */
         int cont = 0;
         for (int i = 0; i < ListaJogadores.Count; i++) {
             if(nome == ListaJogadores[i].getNome()) {

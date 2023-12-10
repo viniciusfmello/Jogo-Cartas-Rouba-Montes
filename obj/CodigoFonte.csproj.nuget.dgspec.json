@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\vinic\\Desktop\\projetos\\Rouba Montes\\CodigoFonte\\CodigoFonte.csproj": {}
+    "C:\\Users\\gabri\\Jogo-Cartas-Rouba-Montes-1\\CodigoFonte.csproj": {}
   },
   "projects": {
-    "C:\\Users\\vinic\\Desktop\\projetos\\Rouba Montes\\CodigoFonte\\CodigoFonte.csproj": {
+    "C:\\Users\\gabri\\Jogo-Cartas-Rouba-Montes-1\\CodigoFonte.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\vinic\\Desktop\\projetos\\Rouba Montes\\CodigoFonte\\CodigoFonte.csproj",
+        "projectUniqueName": "C:\\Users\\gabri\\Jogo-Cartas-Rouba-Montes-1\\CodigoFonte.csproj",
         "projectName": "CodigoFonte",
-        "projectPath": "C:\\Users\\vinic\\Desktop\\projetos\\Rouba Montes\\CodigoFonte\\CodigoFonte.csproj",
-        "packagesPath": "C:\\Users\\vinic\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\vinic\\Desktop\\projetos\\Rouba Montes\\CodigoFonte\\obj\\",
+        "projectPath": "C:\\Users\\gabri\\Jogo-Cartas-Rouba-Montes-1\\CodigoFonte.csproj",
+        "packagesPath": "C:\\Users\\gabri\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\gabri\\Jogo-Cartas-Rouba-Montes-1\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\vinic\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\gabri\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [

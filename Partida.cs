@@ -4,6 +4,10 @@ class Partida
     private Stack<Cartas> cartasMesa = new Stack<Cartas>();
     public List<Cartas> EmbaralharCartas(List<Cartas> cartasBaralho, int quantBaralhos, string caminhoArquivoLogs)
     {
+        /* Nessa função, utilizamos um random que vai selecionar as opções de forma aleatória e salvar num vetor alternativo caso a posição ainda não tenha sido usada. Ao final,
+        teremos um vetor com as cartas embaralhadas que está denominado cartasEmbaralhadas. Após tudo pronto, pegamos esse vetor e o transformamos em uma lista para salvarmos na lista e retornar.
+
+        */
         Random numerosAleatorios = new Random();
         Cartas[] cartasEmbaralhadas = cartasBaralho.ToArray();
         List<int> PosicoesQueJaforam = new List<int>();
@@ -31,7 +35,11 @@ class Partida
     }
     public Stack<Cartas> Baralho(List<Cartas> MonteCompras)
     {
-        for (int i = 0; i < 10; i++)
+        /*
+        Como um baralho se comporta como uma pilha, transformamos a lista de cartas embaralhadas em uma pilha, que é o atributo da classe partida. Para isso, 
+        criamos um for para percorrer a lista de cartas embaralhadas e adicionamos no cartas mesa.
+        */
+        for (int i = 0; i < MonteCompras.Count; i++)
         {
             cartasMesa.Push(MonteCompras[i]);
         }
@@ -39,6 +47,11 @@ class Partida
     }
     public void IniciarPartida(Stack<Cartas> MonteCompras, Jogador jogador, Cartas cartaDaVez, List<Jogador> listaJogadores, List<Cartas> ListaDeCartasAreaDescarte, string caminhoArquivoLogs)
     {
+        /* Inicialmente pecorremos a lista de jogadores com um for para pegar o topo do monte de cada jogador, caso o monte do jogador foi igual a zero,
+         uma mensagem dizendo que o jogador não possui um monte é mostrada, caso o monte do jogador for maior que zero, é mostrada 
+         uma mensagem dizendo o nome do jogador que possui um monte, o número de sua carta e o naipe.
+
+        */
         Console.ForegroundColor = ConsoleColor.Green;
         Console.WriteLine("\nTOPO DOS MONTES DOS JOGADORES\n");
         using (StreamWriter escritorArquivo = new StreamWriter(caminhoArquivoLogs, true))
@@ -71,6 +84,10 @@ class Partida
                 Console.ResetColor();
             }
         }
+        /*
+             Aqui foi criado um menu de opções com as possibilidades de jogada para cada jogador. Na primeira opção o jogador caso tenha em sua vez a carta da vez com o número semelhante a carta da área de descarte, é possível fazer um monte. Na segunda opção, é requisitado o nome do jogador que você deseja roubar o monte, caso o topo do monte do jogador escolhido tenha um número igual ao da carta da vez ou a carta da vez ser o coringa, as cartas do monte do jogador escolhido são transferidas para quem executou essa opção. Na terceira opção, caso na sua vez você retire na carta da vez uma carta semelhante ao seu topo, é possível adicioná-la ao seu monte. Na quarta opção, o jogador descarta a carta da vez na área de descarte.
+
+        */
         bool verificaRepeticaoMenu, sair = false;
         while (!sair)
         {
@@ -147,6 +164,9 @@ class Partida
                 Console.ResetColor();
             }
         }
+        /*
+          Criamos um cronômetro com o tempo determinado de 3 segundos para limpar o console sempre que um jogador fizer uma jogada, evitando que o próximo jogador tenha acesso a suas informações.
+        */
         Stopwatch cronometroLimparConsole = new Stopwatch();
         cronometroLimparConsole.Start();
         while (true)
@@ -160,8 +180,13 @@ class Partida
             }
         }
     }
+    
     static bool PegarAreaDescarteComCartaVez(Jogador jogador, Cartas cartaDaVez, List<Cartas> ListaDeCartasAreaDescarte, string caminhoArquivoLogs)
     {
+        /*
+        Nesse método percorremos a lista de cartas da área de descarte e verificamos se a carta retirada da vez é coringa ou tem o número semelhante a alguma carta da área de descarte. Caso alguma dessas sentenças forem verdadeiras, a carta é retirada da área de descarte e adicionada junto da carta da vez ao monte do jogador que executou a ação.
+        Caso a opção escolhida não dê certo, exibe uma mensagem de erro e o jogador é redirecionado a fazer outra escolha.
+        */
         for (int i = 0; i < ListaDeCartasAreaDescarte.Count; i++)
         {
             if (ListaDeCartasAreaDescarte[i].GetNumero() == cartaDaVez.GetNumero() && ListaDeCartasAreaDescarte.Count > 0 || cartaDaVez.GetNumero() == 14)
@@ -272,6 +297,10 @@ class Partida
     }
     static bool ColocarCartaDaVezNoProprioMonte(Jogador jogador, Cartas cartaDaVez, string caminhoArquivoLogs)
     {
+        /*
+         Primeiramente, verificamos se o jogador possui um monte. Logo em seguida verificamos se o número da carta do monte do jogador é igual ao número da carta da vez, caso seja,
+         a carta é adicionada no monte do jogador que executou essa ação. Mas, em situação contrária, é exibida uma mensagem de erro e o jogador é redirecionado ao menu novamente para selecionar outra opção. 
+        */
         if (jogador.monteJogador.Count > 0)
         {
             if (jogador.getTopoMonte().GetNumero() == cartaDaVez.GetNumero())
@@ -298,6 +327,9 @@ class Partida
     }
     static bool ColocarCartaAreaDescarte(Cartas cartaDaVez, List<Cartas> ListaDeCartasAreaDescarte, Jogador jogador, string caminhoArquivoLogs)
     {
+        /*
+        Esse método é um pouco mais simples, ele foi criado para adicionar a carta da vez na área de descarte, caso assim o jogador escolher.
+        */
         ListaDeCartasAreaDescarte.Add(cartaDaVez);
         Console.ForegroundColor = ConsoleColor.Yellow;
         Console.WriteLine($"\n**** CARTA {cartaDaVez.GetNumero()} {cartaDaVez.GetNaipe()} FOI ADICIONADA NA ÁREA DE DESCARTE ****\n");
@@ -310,6 +342,9 @@ class Partida
     }
     static void ExibeMenu(Cartas cartaDaVez, List<Cartas> ListaDeCartasAreaDescarte, List<Jogador> listaJogadores, Jogador jogador, string caminhoArquivoLogs)
     {
+        /*
+        Nesse método, criamos um menu para exibir a carta da vez, a área de cartas descartadas e a lista de jogadores. Para exibir a área de cartas descartadas, utilizamos um if para saber se existia alguma carta na área de descarte, caso a lista de cartas descartadas for maior que zero, um for é utilizado para percorrer a lista e assim pegar o número e o naipe das cartas na área de descarte. Caso a lista de cartas descartadas for menor que zero, uma mensagem de erro é exibida mostrando que a área de descarte está vazia. Além disso, é exibido também o topo do monte de todos os jogadores. Esse método utilizamos quando um jogador faz uma jogada e quando ela dá certo, o jogador tem a possibilidade de retirar novamente uma carta e fazer outra jogada, até que não seja mais possível atuar naquela rodada e seja necessário fazer o descarte. 
+        */
         Console.ForegroundColor = ConsoleColor.Yellow;
         Console.WriteLine($"**** A CARTA DA VEZ É: {cartaDaVez.GetNumero()} {cartaDaVez.GetNaipe()} ****\n");
         using (StreamWriter escritorArquivo = new StreamWriter(caminhoArquivoLogs, true))
