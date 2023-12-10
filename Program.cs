@@ -165,11 +165,11 @@ class Program
         Partida partida = new Partida();
         for (int i = 0; i < quantBaralhos; i++)
         {
-            cartas.AdicionarCartas(cartasBaralho); //Adiciona cartas ao baralho
+            cartas.AdicionarCartas(cartasBaralho); //Adiciona cartas ao baralho (em forma de lista)
         }
-        //Embaralha todas cartas
+        //Embaralha todas cartas da lista
         List<Cartas> BaralhoEmbaralhado = partida.EmbaralharCartas(cartasBaralho, quantBaralhos, caminhoArquivoLogs);
-        //Adiciona as cartas no baralho
+        //Adiciona cartas embaralhadas no monte de compras (pilha)
         Stack<Cartas> MonteCompras = partida.Baralho(BaralhoEmbaralhado);
         for (int i = 0; i < quantJogadores; i++)
         {
@@ -183,9 +183,9 @@ class Program
         while (MonteCompras.Count > 0)
         {
             using (StreamWriter escritorArquivo = new StreamWriter(caminhoArquivoLogs, true))
-                {
-                    escritorArquivo.Write($"O baralho tem {MonteCompras.Count} cartas.");
-                }
+            {
+                escritorArquivo.Write($"O baralho tem {MonteCompras.Count} cartas.");
+            }
             Jogador jogador = rodada.Dequeue();
             rodada.Enqueue(jogador);
             Cartas cartaDaVez;
@@ -250,27 +250,29 @@ class Program
         Aqui é apenas um menu fim de rodada, onde os jogadores tem a opção de escolher o rank de outro jogador.
         */
         OrdenarGanhadores(ListaJogadores);
-        Console.WriteLine("--- MENU FIM DE RODADA ---");
+        Console.WriteLine("\n**** MENU FIM DE RODADA ****\n");
         Console.WriteLine("1) Deseja iniciar uma nova rodada?\n2) Deseja ver o ranking de algum jogador?\n3) Sair do jogo.");
         int continuar = int.Parse(Console.ReadLine());
-        switch (continuar) {
-            case 1: 
-            IniciarPartida(quantBaralhos, quantJogadores, caminhoArquivoLogs);
-            break;
+        switch (continuar)
+        {
+            case 1:
+                IniciarPartida(quantBaralhos, quantJogadores, caminhoArquivoLogs);
+                break;
             case 2:
-            string nome = "";
-            Console.WriteLine("Insira o nome do jogador que você deseja pesquisar o rank: ");
-            nome = Console.ReadLine();
-            BuscarRankingJogador(ListaJogadores, nome);
-            break;
+                Console.WriteLine("Insira o nome do jogador que você deseja pesquisar o rank: ");
+                string nome = Console.ReadLine().ToUpper();
+                BuscarRankingJogador(ListaJogadores, nome);
+                break;
             case 3:
-            Console.WriteLine("Obrigado por jogar nosso jogo!"); 
-            break;
-            default: 
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("**** OPÇÃO INVÁLIDA ****");
-            Console.ResetColor();
-            break;
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("\nObrigado por jogar nosso jogo!\n");
+                Console.ResetColor();
+                break;
+            default:
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("**** OPÇÃO INVÁLIDA ****");
+                Console.ResetColor();
+                break;
         }
     }
     static void CadastrarJogadores(int quantJogadores)
@@ -366,7 +368,7 @@ class Program
                         MostrarMonteOrdenado(MonteJogador);
                         ListaJogadores[cont].ranking.Enqueue(cont + 1);
                         ListaJogadores[cont + 1].ranking.Enqueue(cont + 1);
-                         using (StreamWriter escritorArquivo = new StreamWriter(caminhoArquivoRankings, true))
+                        using (StreamWriter escritorArquivo = new StreamWriter(caminhoArquivoRankings, true))
                         {
                             escritorArquivo.WriteLine($"- O jogador [{ListaJogadores[cont].getNome()}] ficou na posição {cont + 1}");
                             escritorArquivo.WriteLine($"- O jogador [{ListaJogadores[cont + 1].getNome()}] ficou na posição {cont + 1}");
@@ -374,18 +376,18 @@ class Program
                         cont += 2;
                         posicao++;
                         empatou = true;
-                       
+
                     }
                 }
-                if(!empatou)
+                if (!empatou)
                 {
                     Console.WriteLine($"Nome Jogador: {ListaJogadores[cont].getNome()}\nPosição: {cont + 1}\nQuantidade de cartas no monte: {ListaJogadores[cont].getQtdCartasMonte()}\nCartas ordenadas do monte do jogador:");
                     MostrarMonteOrdenado(MonteJogador);
                     ListaJogadores[cont].ranking.Enqueue(cont);
                     using (StreamWriter escritorArquivo = new StreamWriter(caminhoArquivoRankings, true))
-                        {
-                            escritorArquivo.WriteLine($"- O jogador [{ListaJogadores[cont].getNome()}] ficou na posição {cont + 1}");
-                        }
+                    {
+                        escritorArquivo.WriteLine($"- O jogador [{ListaJogadores[cont].getNome()}] ficou na posição {cont + 1}");
+                    }
                     cont++;
                 }
             }
@@ -431,23 +433,35 @@ class Program
             }
         }
     }
-    static void BuscarRankingJogador(List<Jogador> ListaJogadores, string nome) {
+    static void BuscarRankingJogador(List<Jogador> ListaJogadores, string nome)
+    {
         /*
         Esse método foi criado para buscar o ranking de um jogador. Para isso utilizamos um for para percorrer a lista de jogadores, se o nome digitado for encontrado
         na lista, então uma mensagem dizendo que o jogador foi encontrado é exibida, junto com as últimas 5 posições do jogador. Para encontrar a posição do jogador no rank, utilizamos
         um foreach para percorrer, na posição do jogador encontrada, todos os ranks das últimas 5 partidas jogadas do jogador em questão.
         */
         int cont = 0;
-        for (int i = 0; i < ListaJogadores.Count; i++) {
-            if(nome == ListaJogadores[i].getNome()) {
+        bool EncontrouJogador = false;
+        for (int i = 0; i < ListaJogadores.Count; i++)
+        {
+            if (nome == ListaJogadores[i].getNome())
+            {
+                EncontrouJogador = true;
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine($"*** O JOGADOR FOI ENCONTRADO ***\nAS 5 ÚLTIMAS POSIÇÕES DO JOGADOR {ListaJogadores[i].getNome()} FORAM: ");
-                Console.ResetColor();       
-                foreach (var rank in ListaJogadores[i].ranking){
-                    Console.WriteLine($"PARTIDA {cont + 1} POSIÇÃO: {rank}°");
-                    cont ++;
+                Console.ResetColor();
+                foreach (var rank in ListaJogadores[i].ranking)
+                {
+                    Console.WriteLine($"PARTIDA: {cont + 1} POSIÇÃO: {rank}°");
+                    cont++;
                 }
             }
+        }
+        if (!EncontrouJogador)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("**** JOGADOR NÃO ENCONTRADO ****");
+            Console.ResetColor();
         }
     }
 }
